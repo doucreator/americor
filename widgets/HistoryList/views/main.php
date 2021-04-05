@@ -1,16 +1,11 @@
 <?php
 
-use app\models\search\HistorySearch;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Html;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider ActiveDataProvider */
-/* @var $model HistorySearch */
-/* @var $linkExport string */
-
 ?>
 
 <?php Pjax::begin(['id' => 'grid-pjax', 'formSelector' => false]); ?>
@@ -19,14 +14,9 @@ use yii\widgets\Pjax;
     <div class="panel-body panel-body-selected">
 
         <div class="pull-sm-right">
-            <?php if (!empty($linkExport)) {
-                echo Html::a(Yii::t('app', 'CSV'), $linkExport,
-                    [
-                        'class' => 'btn btn-success',
-                        'data-pjax' => 0
-                    ]
-                );
-            } ?>
+            <?= app\widgets\Export\ExportButton::widget([
+                'name' => Yii::t('app', 'CSV'), 'options' => ['class' => 'btn btn-success']
+            ]); ?>
         </div>
 
     </div>
@@ -34,7 +24,7 @@ use yii\widgets\Pjax;
 
 <?php echo ListView::widget([
     'dataProvider' => $dataProvider,
-    'itemView' => '_item',
+    'itemView' => [$this->context, 'renderItem'],
     'options' => [
         'tag' => 'ul',
         'class' => 'list-group'

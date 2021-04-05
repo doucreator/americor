@@ -63,15 +63,19 @@ class HistorySearch extends History
         }
 
         $query->addSelect('history.*');
-        $query->with([
-            'customer',
-            'user',
-            'sms',
-            'task',
-            'call',
-            'fax',
-        ]);
+        $query->with($this->getRelationsList());
 
         return $dataProvider;
+    }
+
+
+    private function getRelationsList()
+    {
+        $relations = [];
+        foreach (self::$classes as $class) {
+            $relations[] = self::getObjectByTableClassName($class);
+        }
+
+        return $relations;
     }
 }

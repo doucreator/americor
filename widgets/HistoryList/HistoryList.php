@@ -3,14 +3,14 @@
 namespace app\widgets\HistoryList;
 
 use app\models\search\HistorySearch;
-use app\widgets\Export\Export;
-use yii\base\Widget;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
+use app\widgets\HistoryList\objects\ObjectResolverTrait;
 use Yii;
+use yii\base\Widget;
 
 class HistoryList extends Widget
 {
+    use ObjectResolverTrait;
+
     /**
      * @return string
      */
@@ -19,23 +19,18 @@ class HistoryList extends Widget
         $model = new HistorySearch();
 
         return $this->render('main', [
-            'model' => $model,
-            'linkExport' => $this->getLinkExport(),
             'dataProvider' => $model->search(Yii::$app->request->queryParams)
         ]);
     }
 
     /**
+     * @param $model
+     * @param $key
+     * @param $index
      * @return string
      */
-    private function getLinkExport()
+    public function renderItem($model, $key, $index)
     {
-        $params = Yii::$app->getRequest()->getQueryParams();
-        $params = ArrayHelper::merge([
-            'exportType' => Export::FORMAT_CSV
-        ], $params);
-        $params[0] = 'site/export';
-
-        return Url::to($params);
+        return $this->getObject($model, $key, $index)->render();
     }
 }
